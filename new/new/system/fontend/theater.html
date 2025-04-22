@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStage Pro - Theater Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0f1923;
+            --secondary-color: #e62429;
+            --accent-color: #5c6bc0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #c11a20;
+            border-color: #c11a20;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-info {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(15, 25, 35, 0.05);
+            transform: scale(1.01);
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(92, 107, 192, 0.25);
+        }
+
+        .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+        }
+
+        .theater-icon {
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .action-buttons .btn {
+            margin-right: 5px;
+            min-width: 80px;
+        }
+
+        .seat-stats {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        /* Animation for form elements */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-body > * {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .action-buttons .btn {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-building theater-icon"></i>CineMaster Pro
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="adminDashboard.html"><i class="bi bi-house-door"></i> Dashboard</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center"><i class="bi bi-building"></i> Theater Management System</h2>
+
+    <!-- Search Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="bi bi-search"></i> Search Theater</h4>
+        </div>
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-ticket-perforated"></i></span>
+                        <input type="number" id="searchId" class="form-control" placeholder="Enter Theater ID">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info w-100" onclick="searchTheater()">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theater Form Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="bi bi-pencil-square"></i> Theater Details</h4>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="theaterId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Theater Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                        <input type="text" id="name" class="form-control" placeholder="Enter theater name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Seat Price ($)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                        <input type="number" id="seatPrice" class="form-control" placeholder="Enter seat price">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                        <input type="text" id="description" class="form-control" placeholder="Enter theater description">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Row Count</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-grid-3x3-gap"></i></span>
+                        <input type="number" id="rowCount" class="form-control" placeholder="Enter row count">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Column Count</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-grid-3x3-gap-fill"></i></span>
+                        <input type="number" id="columnCount" class="form-control" placeholder="Enter column count">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <div>
+                    <button class="btn btn-primary" onclick="saveTheater()">
+                        <i class="bi bi-save"></i> Save Theater
+                    </button>
+                    <button class="btn btn-success" onclick="updateTheater()" style="display:none;" id="updateBtn">
+                        <i class="bi bi-arrow-repeat"></i> Update Theater
+                    </button>
+                </div>
+                <button class="btn btn-secondary" onclick="clearForm()" id="clearBtn">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theaters List Section -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4><i class="bi bi-list-ul"></i> Theaters Catalog</h4>
+            <div>
+                <span class="badge bg-primary" id="theaterCount">0 theaters</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Seat Price</th>
+                        <th>Layout</th>
+                        <th>Total Seats</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="theaterTable">
+                    <tr>
+                        <td colspan="7" class="text-center">Loading theaters...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Save Theater
+    function saveTheater() {
+        let theater = {
+            name: $('#name').val(),
+            description: $('#description').val(),
+            seatPrice: $('#seatPrice').val(),
+            rowCount: $('#rowCount').val(),
+            columnCount: $('#columnCount').val()
+        };
+
+        if (!theater.name || !theater.description || !theater.seatPrice || !theater.rowCount || !theater.columnCount) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please fill all fields',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Saving Theater',
+            html: 'Please wait while we save the theater...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/theater/saveTheater',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(theater),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    confirmButtonColor: '#e62429'
+                });
+                clearForm();
+                loadTheaters();
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error saving theater: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Update Theater
+    function updateTheater() {
+        let theater = {
+            id: $('#theaterId').val(),
+            name: $('#name').val(),
+            description: $('#description').val(),
+            seatPrice: $('#seatPrice').val(),
+            rowCount: $('#rowCount').val(),
+            columnCount: $('#columnCount').val()
+        };
+
+        if (!theater.name || !theater.description || !theater.seatPrice || !theater.rowCount || !theater.columnCount) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please fill all fields',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Updating Theater',
+            html: 'Please wait while we update the theater...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/theater/updateTheater',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(theater),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    confirmButtonColor: '#e62429'
+                });
+                clearForm();
+                loadTheaters();
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error updating theater: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Search Theater
+    function searchTheater() {
+        const id = $('#searchId').val();
+        if (!id) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please enter a theater ID',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Searching Theater',
+            html: 'Please wait while we search for the theater...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/theater/searchTheater/${id}`,
+            type: 'GET',
+            success: function(response) {
+                if (response.code === "00") {
+                    const theater = response.content;
+                    $('#theaterId').val(theater.id);
+                    $('#name').val(theater.name);
+                    $('#description').val(theater.description);
+                    $('#seatPrice').val(theater.seatPrice);
+                    $('#rowCount').val(theater.rowCount);
+                    $('#columnCount').val(theater.columnCount);
+
+                    $('#updateBtn').show();
+                    $('html, body').animate({
+                        scrollTop: $(".card-body").offset().top
+                    }, 500);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Theater Found',
+                        text: 'Theater loaded for editing',
+                        confirmButtonColor: '#e62429'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Not Found',
+                        text: response.message || 'Theater not found',
+                        confirmButtonColor: '#e62429'
+                    });
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error searching theater: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Load All Theaters
+    function loadTheaters() {
+        $('#theaterTable').html(`
+            <tr>
+                <td colspan="7" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </td>
+            </tr>
+        `);
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/theater/getAllTheaters',
+            type: 'GET',
+            success: function(response) {
+                let rows = '';
+                if (response.content && response.content.length > 0) {
+                    response.content.forEach(theater => {
+                        const totalSeats = theater.rowCount * theater.columnCount;
+                        rows += `<tr>
+                            <td>${theater.id}</td>
+                            <td><strong>${theater.name}</strong></td>
+                            <td>${theater.description}</td>
+                            <td>$${theater.seatPrice}</td>
+                            <td>${theater.rowCount} × ${theater.columnCount}</td>
+                            <td class="seat-stats">${totalSeats} seats</td>
+                            <td class="action-buttons">
+                                <button class='btn btn-warning btn-sm' onclick='editTheater(${theater.id})' title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteTheater(${theater.id})' title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class='btn btn-info btn-sm' onclick='viewTheater(${theater.id})' title="View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                    $('#theaterCount').text(response.content.length + ' theaters');
+                } else {
+                    rows = `<tr><td colspan="7" class="text-center">No theaters found in the database</td></tr>`;
+                    $('#theaterCount').text('0 theaters');
+                }
+                $('#theaterTable').html(rows);
+            },
+            error: function(error) {
+                $('#theaterTable').html(`<tr><td colspan="7" class="text-center text-danger">Error loading theaters: ${error.responseJSON?.message || 'Server error'}</td></tr>`);
+            }
+        });
+    }
+
+    // Edit Theater (populate form for editing)
+    function editTheater(id) {
+        Swal.fire({
+            title: 'Loading Theater',
+            html: 'Please wait while we load the theater details...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/theater/searchTheater/${id}`,
+            type: 'GET',
+            success: function(response) {
+                Swal.close();
+                if (response.code === "00") {
+                    const theater = response.content;
+                    $('#theaterId').val(theater.id);
+                    $('#name').val(theater.name);
+                    $('#description').val(theater.description);
+                    $('#seatPrice').val(theater.seatPrice);
+                    $('#rowCount').val(theater.rowCount);
+                    $('#columnCount').val(theater.columnCount);
+
+                    $('#updateBtn').show();
+                    $('html, body').animate({
+                        scrollTop: $(".card-body").offset().top
+                    }, 500);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Theater Loaded',
+                        text: 'Theater details loaded for editing',
+                        confirmButtonColor: '#e62429'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Not Found',
+                        text: response.message || 'Theater not found',
+                        confirmButtonColor: '#e62429'
+                    });
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error fetching theater: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // View Theater (placeholder for view functionality)
+    function viewTheater(id) {
+        Swal.fire({
+            icon: 'info',
+            title: 'View Theater',
+            text: `View functionality for theater ID ${id} would be implemented here`,
+            confirmButtonColor: '#e62429'
+        });
+    }
+
+    // Delete Theater
+    function deleteTheater(id) {
+        Swal.fire({
+            title: 'Confirm Theater Deletion',
+            text: 'Are you sure you want to delete this theater? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Deleting Theater',
+                    html: 'Please wait while we delete the theater...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: `http://localhost:8080/api/v1/theater/deleteTheater/${id}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: response.message,
+                            confirmButtonColor: '#e62429'
+                        });
+                        loadTheaters();
+                    },
+                    error: function(error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error deleting theater: ' + (error.responseJSON?.message || 'Unknown error'),
+                            confirmButtonColor: '#e62429'
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // Clear Form
+    function clearForm() {
+        $('#theaterId').val('');
+        $('#name').val('');
+        $('#description').val('');
+        $('#seatPrice').val('');
+        $('#rowCount').val('');
+        $('#columnCount').val('');
+        $('#searchId').val('');
+        $('#updateBtn').hide();
+        Swal.fire({
+            icon: 'info',
+            title: 'Form Cleared',
+            text: 'The form has been cleared',
+            confirmButtonColor: '#e62429'
+        });
+    }
+
+    // Initialize
+    $(document).ready(function() {
+        loadTheaters();
+
+        // Add cinema-like animation to the container
+        $('.container').hide().fadeIn(800);
+
+        // Add event listener for Enter key in search field
+        $('#searchId').keypress(function(e) {
+            if (e.which === 13) {
+                searchTheater();
+            }
+        });
+    });
+</script>
+</body>
+</html>

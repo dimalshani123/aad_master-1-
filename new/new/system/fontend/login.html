@@ -1,0 +1,421 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineHub - Theater Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+            url('https://images.pexels.com/photos/33129/popcorn-movie-party-entertainment.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Keep all other styles the same as previous version */
+        .site-section {
+            width: 100%;
+            padding: 50px 0;
+        }
+
+        .login-container {
+            background-color: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 0;
+            border: 2px solid #c41e1e;
+        }
+
+        .login-video-container {
+            position: relative;
+            min-height: 700px;
+            overflow: hidden;
+        }
+
+        .login-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(196, 30, 30, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
+            opacity: 0.85;
+            z-index: 1;
+        }
+
+        .login-video-content {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            color: #ffd700;
+            z-index: 2;
+        }
+
+        .login-video-content h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-video-content p {
+            font-size: 16px;
+            max-width: 300px;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        .login-form-container {
+            padding: 40px;
+            background: #1a1a1a;
+        }
+
+        .login-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-heading h3 {
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-heading p {
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #ffd700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            height: 50px;
+            border-radius: 8px;
+            border: 1px solid #c41e1e;
+            padding: 10px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(196, 30, 30, 0.25);
+            border-color: #c41e1e;
+            background-color: #333333;
+        }
+
+        .icon-input i {
+            color: #c41e1e;
+        }
+
+        .password-toggle {
+            color: #c41e1e;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #c41e1e 0%, #8a1313 100%);
+            border: none;
+            height: 50px;
+            font-weight: 600;
+            color: #ffd700;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(196, 30, 30, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(196, 30, 30, 0.5);
+            color: #ffffff;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .remember-me input {
+            margin-right: 6px;
+        }
+
+        .forgot-password {
+            color: #ffd700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #c41e1e;
+            text-decoration: none;
+        }
+
+        .divider:before,
+        .divider:after {
+            background-color: #c41e1e;
+        }
+
+        .divider span {
+            color: #ffd700;
+            background-color: #1a1a1a;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            background-color: #2a2a2a;
+            border: 1px solid #c41e1e;
+            color: #ffd700;
+        }
+
+        .social-btn:hover {
+            background-color: #c41e1e;
+            color: #ffffff;
+        }
+
+        .signup-link {
+            color: #ffffff;
+        }
+
+        .signup-link a {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            color: #c41e1e;
+        }
+
+        @media (max-width: 991px) {
+            .login-video-container {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="site-section">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="login-container row">
+                    <!-- Video Section -->
+                    <div class="col-md-6 p-0 d-none d-md-block">
+                        <div class="login-video-container">
+                            <video class="login-video" autoplay muted loop>
+                                <source src="video/7989394-uhd_2160_4096_25fps.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="video-overlay"></div>
+                            <div class="login-video-content">
+                                <h2>Welcome to CineMaster Pro</h2>
+                                <p>Experience the magic of cinema - Login to manage your theater experience</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Login Form Section -->
+                    <div class="col-md-6">
+                        <div class="login-form-container animated">
+                            <div class="login-heading">
+                                <h3><i class="fas fa-film"></i> Theater Login</h3>
+
+                            </div>
+
+                            <form id="loginForm">
+                                <div class="form-group">
+                                    <label for="login_email">Email Address</label>
+                                    <div class="icon-input">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" id="login_email" class="form-control" placeholder="name@example.com" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="login_password">Password</label>
+                                    <div class="icon-input">
+                                        <i class="fas fa-lock"></i>
+                                        <input type="password" id="login_password" class="form-control" placeholder="Enter your password" required>
+                                        <span class="password-toggle" onclick="togglePassword()">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="remember-forgot">
+                                    <div class="remember-me">
+                                        <input type="checkbox" id="remember">
+                                        <label for="remember">Remember me</label>
+                                    </div>
+                                    <a href="#" class="forgot-password">Forgot Password?</a>
+                                </div>
+
+                                <button type="submit" id="login_btn" class="btn btn-login">
+                                    <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+                                </button>
+                            </form>
+
+                            <div class="divider">
+                                <span>or continue with</span>
+                            </div>
+
+                            <div class="social-login">
+                                <a href="#" class="social-btn facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn google">
+                                    <i class="fab fa-google"></i>
+                                </a>
+                                <a href="#" class="social-btn twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+
+                            <div class="signup-link">
+                                New to CineHub? <a href="register.html">Create Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (event) {
+            event.preventDefault();
+
+            let user = {
+                email: $("#login_email").val().trim(),
+                password: $("#login_password").val().trim()
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/api/auth/login",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(user),
+                success: function (response) {
+                    localStorage.setItem("token", response.token);
+                    if (response.code === 201) {
+                        localStorage.setItem("studentEmail", response.data.email);
+                        localStorage.setItem("studentNic", response.data.nic);
+                        localStorage.setItem("studentReg", response.data.id);
+                        localStorage.setItem("userType", response.data.role);
+
+                        $("#login_email").val('');
+                        $("#login_password").val('');
+
+                        if (response.data.role === "ADMIN") {
+                            window.location.href = "adminDashboard.html";
+                        } else if (response.data.role === "USER") {
+                            window.location.href = "studentHome.html";
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Login Failed",
+                            text: "Invalid Credentials",
+                            confirmButtonText: "Try Again"
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    let errorMessage = "Invalid Email or Password";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Login Failed",
+                        text: errorMessage,
+                        confirmButtonText: "Try Again"
+                    });
+                }
+            });
+        });
+
+        function togglePassword() {
+            const passwordField = $("#login_password");
+            const eyeIcon = $(".password-toggle i");
+            if (passwordField.attr("type") === "password") {
+                passwordField.attr("type", "text");
+                eyeIcon.removeClass("fa-eye").addClass("fa-eye-slash");
+            } else {
+                passwordField.attr("type", "password");
+                eyeIcon.removeClass("fa-eye-slash").addClass("fa-eye");
+            }
+        }
+
+        window.togglePassword = togglePassword;
+    });
+</script>
+</body>
+</html>

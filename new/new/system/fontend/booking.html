@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Theater Booking System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0f1923;
+            --primary-red: #e62429;
+            --secondary-red: #c11a20;
+            --light-text: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--light-text);
+            background:
+                    linear-gradient(rgba(15, 25, 35, 0.85), rgba(15, 25, 35, 0.9)),
+                    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .badge {
+            padding: 0.35em 0.65em;
+            font-weight: 600;
+            border-radius: 4px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-primary {
+            background-color: var(--primary-red);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-info {
+            background-color: #17a2b8;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #212529;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .show-time-badge {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        /* Assignment Cards Layout */
+        .assignments-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .assignment-card {
+            background: rgba(15, 25, 35, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(230, 36, 41, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            height: 100%; /* Ensure cards take full height of grid cell */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(230, 36, 41, 0.4);
+        }
+
+        .assignment-card-header {
+            background: linear-gradient(135deg, rgba(15, 25, 35, 0.9), rgba(193, 26, 32, 0.7));
+            padding: 0.6rem;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .assignment-card-title {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .assignment-card-body {
+            padding: 0.8rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .assignment-detail {
+            margin-bottom: 0.6rem;
+        }
+
+        .assignment-detail-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.1rem;
+        }
+
+        .assignment-detail-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .theater-stats {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.4rem;
+        }
+
+        .show-times-container {
+            margin-top: 0.6rem;
+        }
+
+        .show-times-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+        }
+
+        .show-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .assignment-card-footer {
+            padding: 0.6rem;
+            background: rgba(15, 25, 35, 0.9);
+            border-top: 1px solid rgba(230, 36, 41, 0.2);
+        }
+
+        .no-assignments {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            grid-column: 1 / -1;
+        }
+
+        /* Seat Layout Styles */
+        .seat-layout {
+            margin-top: 0.6rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.6rem;
+            border-radius: 5px;
+            flex-grow: 1;
+        }
+
+        .seat-layout-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.4rem;
+        }
+
+        .seat-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .seat {
+            width: 18px;
+            height: 18px;
+            margin: 0 1px;
+            background-color: #28a745;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.45rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .seat:hover {
+            transform: scale(1.1);
+        }
+
+        .seat.selected {
+            background-color: var(--primary-red);
+        }
+
+        .seat.occupied {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .screen {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            height: 6px;
+            margin-bottom: 0.6rem;
+            border-radius: 50%/100% 100% 0 0;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.5rem;
+            padding-top: 1px;
+        }
+
+        /* Seat Selection Modal */
+        .seat-selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .seat-selection-container {
+            background: rgba(15, 25, 35, 0.95);
+            border-radius: 10px;
+            padding: 1.2rem;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary-red);
+        }
+
+        .seat-selection-header {
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+
+        .seat-selection-title {
+            color: white;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+        }
+
+        .seat-selection-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+        }
+
+        .seat-selection-footer {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .seat-legend {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            margin-right: 0.25rem;
+        }
+
+        .email-input-container {
+            margin-top: 0.6rem;
+        }
+
+        .email-input-container label {
+            display: block;
+            margin-bottom: 0.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.75rem;
+        }
+
+        .email-input-container input {
+            width: 100%;
+            padding: 0.35rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .booking-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.7rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .booking-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #218838, #1e7e34);
+        }
+
+        /* Bookings Table Styles */
+        .bookings-section {
+            margin-top: 1.5rem;
+            background: rgba(15, 25, 35, 0.8);
+            border-radius: 8px;
+            padding: 0.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(230, 36, 41, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .bookings-section h2 {
+            color: white;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid var(--primary-red);
+            padding-bottom: 0.4rem;
+            display: inline-block;
+            font-size: 1.1rem;
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .bookings-table th {
+            background: rgba(230, 36, 41, 0.5);
+            padding: 0.4rem;
+            text-align: left;
+            font-size: 0.75rem;
+        }
+
+        .bookings-table td {
+            padding: 0.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bookings-table tr:hover {
+            background: rgba(230, 36, 41, 0.1);
+        }
+
+        .bookings-table .action-btn {
+            padding: 0.15rem 0.3rem;
+            font-size: 0.65rem;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 25, 35, 0.95);
+            border-left: 4px solid var(--primary-red);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            z-index: 1050;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            max-width: 280px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            margin-right: 0.4rem;
+            font-size: 1rem;
+            color: var(--primary-red);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+            font-size: 0.85rem;
+        }
+
+        .notification-message {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .notification-close {
+            margin-left: 0.4rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+            .assignments-container {
+                grid-template-columns: 1fr;
+            }
+            .seat {
+                width: 16px;
+                height: 16px;
+                font-size: 0.4rem;
+            }
+            .seat-selection-container {
+                padding: 0.8rem;
+                width: 95%;
+            }
+            .bookings-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .notification {
+                width: calc(100% - 40px);
+                max-width: 100%;
+            }
+        }
+
+
+        .cinema-nav {
+            background: linear-gradient(45deg, #0f1923, #e62429);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cinema-title {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: #e62429;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 36, 41, 0.4);
+        }
+
+        .nav-btn i {
+            font-size: 1.1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="cinema-nav">
+    <div class="nav-container">
+        <h1 class="cinema-title">
+            <i class="fas fa-film"></i>
+            CineMaster Pro
+        </h1>
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <a href="user.html" class="nav-btn">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="assignments-container" id="assignmentsContainer">
+    <!-- Cards will be inserted here by JavaScript -->
+    <div class="no-assignments">Loading assignments...</div>
+</div>
+
+
+<!-- Seat Selection Modal (hidden by default) -->
+<div class="seat-selection-modal" id="seatSelectionModal" style="display: none;">
+    <div class="seat-selection-container">
+        <div class="seat-selection-header">
+            <h3 class="seat-selection-title" id="seatSelectionTitle">Select Your Seats</h3>
+            <p class="seat-selection-subtitle" id="seatSelectionSubtitle"></p>
+        </div>
+        <div id="seatSelectionLayout"></div>
+        <div class="seat-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #28a745;"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e62429;"></div>
+                <span>Selected</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #6c757d;"></div>
+                <span>Occupied</span>
+            </div>
+        </div>
+        <div class="email-input-container">
+            <label for="userEmail">Email Address</label>
+            <input type="email" id="userEmail" placeholder="Enter your email for booking confirmation">
+        </div>
+        <div class="seat-selection-footer">
+            <div id="selectedSeatsInfo">No seats selected</div>
+            <div>
+                <button class="btn btn-secondary" onclick="closeSeatSelection()">Cancel</button>
+                <button class="btn btn-primary ms-2 booking-btn" id="saveSeatsBtn" onclick="saveSeatSelection()" disabled>
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Sent Notification -->
+<div class="notification" id="emailNotification">
+    <div class="notification-icon">
+        <i class="fas fa-envelope"></i>
+    </div>
+    <div class="notification-content">
+        <div class="notification-title">Email Sent</div>
+        <div class="notification-message" id="notificationMessage"></div>
+    </div>
+    <div class="notification-close" onclick="hideNotification()">
+        <i class="fas fa-times"></i>
+    </div>
+</div>
+
+<script>
+    // Initialize EmailJS with your user ID
+    (function() {
+        emailjs.init("user_AbC123xyz789"); // Replace with your actual EmailJS user ID
+    })();
+
+    $(document).ready(function() {
+        loadAllAssignments();
+        loadBookings();
+    });
+
+    // Global variables for seat selection
+    let currentAssignment = null;
+    let selectedSeats = [];
+    let occupiedSeats = []; // This will store all occupied seats (from previous bookings)
+    let bookings = []; // Array to store booking history
+
+    function showNotification(message) {
+        const notification = document.getElementById('emailNotification');
+        const messageElement = document.getElementById('notificationMessage');
+
+        messageElement.textContent = message;
+        notification.classList.add('show');
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+    }
+
+    function hideNotification() {
+        document.getElementById('emailNotification').classList.remove('show');
+    }
+
+    function showLoading(title = 'Loading...') {
+        Swal.fire({
+            title: title,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            background: 'rgba(15, 25, 35, 0.9)',
+            color: '#f8f9fa'
+        });
+    }
+
+    function showError(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            confirmButtonColor: '#e62429',
+            background: 'rgba(15, 25, 35, 0.9)',
+            color: '#f8f9fa'
+        });
+    }
+
+    function showSuccess(message, html = false) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: html ? undefined : message,
+            html: html ? message : undefined,
+            confirmButtonColor: '#28a745',
+            background: 'rgba(15, 25, 35, 0.9)',
+            color: '#f8f9fa'
+        });
+    }
+
+    function showConfirmation(title, text, confirmText, cancelText) {
+        return Swal.fire({
+            title: title,
+            text: text,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#e62429',
+            confirmButtonText: confirmText,
+            cancelButtonText: cancelText,
+            background: 'rgba(15, 25, 35, 0.9)',
+            color: '#f8f9fa'
+        });
+    }
+
+    function loadAllAssignments() {
+        showLoading('Loading assignments...');
+
+        // First load all movie-theater assignments
+        $.ajax({
+            url: 'http://localhost:8080/api/movie-theaters',
+            type: 'GET',
+            success: function(assignments) {
+                console.log("Assignments loaded:", assignments);
+
+                // Then load all movies to get show times
+                $.ajax({
+                    url: 'http://localhost:8080/api/v1/movie/getAllMovies',
+                    type: 'GET',
+                    success: function(moviesResponse) {
+                        console.log("Movies loaded for show times:", moviesResponse);
+                        const movies = moviesResponse.content || [];
+
+                        // Then load all theaters to get theater details
+                        $.ajax({
+                            url: 'http://localhost:8080/api/v1/theater/getAllTheaters',
+                            type: 'GET',
+                            success: function(theatersResponse) {
+                                Swal.close();
+                                console.log("Theaters loaded for details:", theatersResponse);
+                                const theaters = theatersResponse.content || [];
+                                const container = $('#assignmentsContainer');
+                                container.empty();
+
+                                if (assignments.length === 0) {
+                                    container.append('<div class="no-assignments">No assignments found.</div>');
+                                    return;
+                                }
+
+                                assignments.forEach(assignment => {
+                                    // Find the movie to get its show times
+                                    const movie = movies.find(m => m.mvId === assignment.movieId);
+                                    const showTimes = movie ? movie.time : 'No show times';
+
+                                    // Find the theater to get its details
+                                    const theater = theaters.find(t => t.id === assignment.theaterId);
+
+                                    // Generate seat layout HTML if theater exists
+                                    let seatLayoutHtml = '';
+                                    if (theater) {
+                                        seatLayoutHtml = `
+                                            <div class="seat-layout">
+                                                <div class="seat-layout-label">Seat Layout</div>
+                                                <div class="screen">SCREEN</div>
+                                                ${generateSeatLayout(theater.rowCount, theater.columnCount)}
+                                            </div>
+                                        `;
+                                    }
+
+                                    // Create card HTML
+                                    const cardHtml = `
+                                        <div class="assignment-card">
+                                            <div class="assignment-card-header">
+                                                <h3 class="assignment-card-title">
+                                                    ${assignment.movieTitle || 'Unnamed Movie'}
+                                                    <span class="badge badge-primary">ID: ${assignment.movieId}</span>
+                                                </h3>
+                                            </div>
+                                            <div class="assignment-card-body">
+                                                <div class="assignment-detail">
+                                                    <div class="assignment-detail-label">Theater</div>
+                                                    <div class="assignment-detail-value">
+                                                        ${theater ? theater.name : 'Theater not found'}
+                                                        <span class="badge badge-primary">ID: ${assignment.theaterId}</span>
+                                                    </div>
+                                                    ${theater ? `
+                                                    <div class="theater-stats">
+                                                        <span class="badge badge-info">$${theater.seatPrice} per seat</span>
+                                                        <span class="badge badge-warning">${theater.rowCount} rows × ${theater.columnCount} cols</span>
+                                                        <span class="badge badge-primary">${theater.rowCount * theater.columnCount} total</span>
+                                                    </div>
+                                                    ${seatLayoutHtml}
+                                                    ` : ''}
+                                                </div>
+
+                                                <div class="show-times-container">
+                                                    <div class="show-times-label">Show Times</div>
+                                                    <div class="show-times">
+                                                        ${showTimes.split(',').map(time =>
+                                        `<span class="badge badge-success show-time-badge">${time.trim()}</span>`
+                                    ).join('')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="assignment-card-footer">
+                                                <button class="btn btn-primary booking-btn" onclick="openSeatSelection(${assignment.id}, ${theater ? theater.rowCount : 0}, ${theater ? theater.columnCount : 0}, '${assignment.movieTitle}', '${theater ? theater.name : 'Unknown Theater'}', ${theater ? theater.seatPrice : 0})">
+                                                    <i class="fas fa-ticket-alt"></i> Book Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+
+                                    container.append(cardHtml);
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.close();
+                                console.error("Error loading theaters for details:", xhr);
+                                showError('Failed to load theater details. Please try again.');
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.close();
+                        console.error("Error loading movies for show times:", xhr);
+                        showError('Failed to load movie show times. Please try again.');
+                    }
+                });
+            },
+            error: function(xhr) {
+                Swal.close();
+                console.error("Error loading assignments:", xhr);
+                showError('Failed to load assignments. Please try again.');
+            }
+        });
+    }
+
+    function loadBookings() {
+        // In a real app, this would fetch from your API
+        // For demo, we'll use localStorage or initialize with empty array
+        const savedBookings = localStorage.getItem('movieBookings');
+        bookings = savedBookings ? JSON.parse(savedBookings) : [];
+
+        // Update the occupied seats based on existing bookings
+        updateOccupiedSeats();
+        updateBookingsTable();
+    }
+
+    function updateOccupiedSeats() {
+        // Reset occupied seats
+        occupiedSeats = [];
+
+        // Add all seats from all bookings to occupied seats
+        bookings.forEach(booking => {
+            occupiedSeats = occupiedSeats.concat(booking.seats);
+        });
+
+        // Remove duplicates (just in case)
+        occupiedSeats = [...new Set(occupiedSeats)];
+    }
+
+    function updateBookingsTable() {
+        const tbody = $('#bookingsTableBody');
+        tbody.empty();
+
+        if (bookings.length === 0) {
+            tbody.append('<tr><td colspan="8" class="text-center">No bookings found</td></tr>');
+            return;
+        }
+
+        bookings.forEach((booking, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${booking.movieName}</td>
+                    <td>${booking.theaterName}</td>
+                    <td>${booking.customerEmail}</td>
+                    <td>${booking.seats.join(', ')}</td>
+                    <td>$${booking.totalPrice.toFixed(2)}</td>
+                    <td>${new Date(booking.bookingDate).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger action-btn" onclick="deleteBooking(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+
+    function saveBookingsToStorage() {
+        localStorage.setItem('movieBookings', JSON.stringify(bookings));
+        // Update occupied seats whenever bookings change
+        updateOccupiedSeats();
+    }
+
+    function deleteBooking(index) {
+        showConfirmation(
+            'Delete Booking?',
+            'Are you sure you want to delete this booking?',
+            'Yes, Delete',
+            'No, Cancel'
+        ).then((result) => {
+            if (result.isConfirmed) {
+                bookings.splice(index, 1);
+                saveBookingsToStorage();
+                updateBookingsTable();
+                showSuccess('Booking deleted successfully');
+            }
+        });
+    }
+
+    function generateSeatLayout(rows, cols) {
+        let seatLayout = '';
+        const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        for (let row = 0; row < rows; row++) {
+            let rowHtml = '<div class="seat-row">';
+            for (let col = 1; col <= cols; col++) {
+                rowHtml += `<div class="seat" title="${rowLetters[row]}${col}">${rowLetters[row]}${col}</div>`;
+            }
+            rowHtml += '</div>';
+            seatLayout += rowHtml;
+        }
+
+        return seatLayout;
+    }
+
+    function openSeatSelection(assignmentId, rows, cols, movieTitle, theaterName, seatPrice) {
+        // Reset selection
+        selectedSeats = [];
+        currentAssignment = {
+            id: assignmentId,
+            rows,
+            cols,
+            movieTitle,
+            theaterName,
+            seatPrice
+        };
+        $('#userEmail').val(''); // Clear previous email
+
+        // Update modal title
+        $('#seatSelectionTitle').text(`Select Seats for ${movieTitle}`);
+        $('#seatSelectionSubtitle').text(`Theater: ${theaterName} | ${rows} rows × ${cols} columns | $${seatPrice} per seat`);
+
+        // Generate seat layout with current occupied seats
+        const seatLayoutHtml = generateInteractiveSeatLayout(rows, cols);
+        $('#seatSelectionLayout').html(`
+            <div class="seat-layout">
+                <div class="screen">SCREEN</div>
+                ${seatLayoutHtml}
+            </div>
+        `);
+
+        // Show modal
+        $('#seatSelectionModal').show();
+        updateSelectedSeatsInfo();
+    }
+
+    function generateInteractiveSeatLayout(rows, cols) {
+        let seatLayout = '';
+        const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        for (let row = 0; row < rows; row++) {
+            let rowHtml = '<div class="seat-row">';
+            for (let col = 1; col <= cols; col++) {
+                const seatId = `${rowLetters[row]}${col}`;
+                const isOccupied = occupiedSeats.includes(seatId);
+                const isSelected = selectedSeats.includes(seatId);
+
+                let seatClass = 'seat';
+                if (isOccupied) seatClass += ' occupied';
+                if (isSelected) seatClass += ' selected';
+
+                rowHtml += `<div class="${seatClass}" onclick="toggleSeatSelection('${seatId}')" title="${seatId}">${seatId}</div>`;
+            }
+            rowHtml += '</div>';
+            seatLayout += rowHtml;
+        }
+
+        return seatLayout;
+    }
+
+    function toggleSeatSelection(seatId) {
+        // Don't allow selection of occupied seats
+        if (occupiedSeats.includes(seatId)) {
+            Swal.fire({
+                title: 'Seat Occupied',
+                text: 'This seat is already booked. Please select another seat.',
+                icon: 'warning',
+                confirmButtonColor: '#e62429',
+                background: 'rgba(15, 25, 35, 0.9)',
+                color: '#f8f9fa'
+            });
+            return;
+        }
+
+        const index = selectedSeats.indexOf(seatId);
+        if (index === -1) {
+            selectedSeats.push(seatId);
+        } else {
+            selectedSeats.splice(index, 1);
+        }
+
+        // Update UI
+        const seatElement = $(`.seat[title="${seatId}"]`);
+        seatElement.toggleClass('selected');
+
+        updateSelectedSeatsInfo();
+    }
+
+    function updateSelectedSeatsInfo() {
+        const infoElement = $('#selectedSeatsInfo');
+        const saveBtn = $('#saveSeatsBtn');
+
+        if (selectedSeats.length === 0) {
+            infoElement.text('No seats selected');
+            saveBtn.prop('disabled', true);
+        } else {
+            const totalPrice = selectedSeats.length * (currentAssignment.seatPrice || 0);
+            infoElement.html(`
+                <div>Selected: ${selectedSeats.join(', ')}</div>
+                <div class="mt-1"><strong>Total: $${totalPrice.toFixed(2)}</strong></div>
+            `);
+            saveBtn.prop('disabled', false);
+        }
+    }
+
+    function closeSeatSelection() {
+        if (selectedSeats.length > 0) {
+            showConfirmation(
+                'Cancel Selection?',
+                'You have selected seats. Are you sure you want to cancel?',
+                'Yes, Cancel',
+                'No, Continue'
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    $('#seatSelectionModal').hide();
+                }
+            });
+        } else {
+            $('#seatSelectionModal').hide();
+        }
+    }
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function sendBookingConfirmationEmail(booking) {
+        // Prepare email template parameters
+        const templateParams = {
+            to_email: booking.customerEmail,
+            movie_name: booking.movieName,
+            theater_name: booking.theaterName,
+            seats: booking.seats.join(', '),
+            total_price: `$${booking.totalPrice.toFixed(2)}`,
+            booking_date: new Date(booking.bookingDate).toLocaleString(),
+            booking_id: bookings.length
+        };
+
+        // Send email using EmailJS
+        emailjs.send('service_abc123', 'template_xyz456', templateParams)
+            .then(function(response) {
+                console.log('Email sent successfully!', response.status, response.text);
+                // Show notification that email was sent
+                showNotification(`Confirmation email has been sent to ${booking.customerEmail}`);
+            }, function(error) {
+                console.error('Failed to send email:', error);
+                // Show notification that email failed
+                showNotification(`Failed to send confirmation email to ${booking.customerEmail}. Please check your booking details.`);
+            });
+    }
+
+    function saveSeatSelection() {
+        const userEmail = $('#userEmail').val().trim();
+
+        if (!userEmail) {
+            showError('Please enter your email address');
+            return;
+        }
+
+        if (!validateEmail(userEmail)) {
+            showError('Please enter a valid email address');
+            return;
+        }
+
+        if (selectedSeats.length === 0) {
+            showError('Please select at least one seat');
+            return;
+        }
+
+        const totalPrice = selectedSeats.length * (currentAssignment.seatPrice || 0);
+
+        // Create new booking
+        const newBooking = {
+            movieId: currentAssignment.id,
+            movieName: currentAssignment.movieTitle,
+            theaterName: currentAssignment.theaterName,
+            customerEmail: userEmail,
+            seats: [...selectedSeats],
+            seatPrice: currentAssignment.seatPrice,
+            totalPrice: totalPrice,
+            bookingDate: new Date().toISOString()
+        };
+
+        showLoading('Saving your selection...');
+
+        // In a real application, you would send this data to your server
+        // For this demo, we'll save to localStorage
+        setTimeout(() => {
+            bookings.unshift(newBooking); // Add to beginning of array
+            saveBookingsToStorage();
+
+            // Send booking confirmation email
+            sendBookingConfirmationEmail(newBooking);
+
+            const successHtml = `
+                <div class="text-left">
+                    <h4>Selection Saved!</h4>
+                    <p><strong>Movie:</strong> ${currentAssignment.movieTitle}</p>
+                    <p><strong>Theater:</strong> ${currentAssignment.theaterName}</p>
+                    <p><strong>Seats:</strong> ${selectedSeats.join(', ')}</p>
+                    <p><strong>Total Price:</strong> $${totalPrice.toFixed(2)}</p>
+                    <p class="mt-2">Confirmation sent to: <strong>${userEmail}</strong></p>
+                </div>
+            `;
+            showSuccess(successHtml, true);
+
+            // Update the bookings table
+            updateBookingsTable();
+
+            // Close modal and reset
+            $('#seatSelectionModal').hide();
+            selectedSeats = [];
+        }, 1500);
+    }
+</script>
+</body>
+</html>

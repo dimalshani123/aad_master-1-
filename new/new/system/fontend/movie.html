@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMaster Pro - Movie Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0f1923;
+            --secondary-color: #e62429;
+            --accent-color: #5c6bc0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #c11a20;
+            border-color: #c11a20;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-info {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(15, 25, 35, 0.05);
+            transform: scale(1.01);
+        }
+
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(92, 107, 192, 0.25);
+        }
+
+        .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+        }
+
+        .movie-clapper {
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .action-buttons .btn {
+            margin-right: 5px;
+            min-width: 80px;
+        }
+
+        /* Animation for form elements */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-body > * {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .action-buttons .btn {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        }
+
+        /* Custom styles for multi-select */
+        .multiselect-dropdown {
+            position: relative;
+        }
+
+        .multiselect-dropdown .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 42px;
+        }
+
+        .multiselect-dropdown .selected-item {
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .multiselect-dropdown .selected-item .remove-item {
+            margin-left: 5px;
+            cursor: pointer;
+            color: #dc3545;
+        }
+
+        .multiselect-dropdown .dropdown-toggle {
+            width: 100%;
+            text-align: left;
+            position: relative;
+        }
+
+        .multiselect-dropdown .dropdown-toggle::after {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .multiselect-dropdown .dropdown-menu {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .multiselect-dropdown .dropdown-item {
+            padding: 8px 16px;
+        }
+
+        .multiselect-dropdown .dropdown-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-camera-reels-fill movie-clapper"></i>CineMaster Pro
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="adminDashboard.html"><i class="bi bi-house-door"></i> Dashboard</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center"><i class="bi bi-film"></i> Movie Management System</h2>
+
+    <!-- Search Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="bi bi-search"></i> Search Movie</h4>
+        </div>
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-ticket-perforated"></i></span>
+                        <input type="number" id="searchMvId" class="form-control" placeholder="Enter Movie ID">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info w-100" onclick="searchMovie()">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Form Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="bi bi-pencil-square"></i> Movie Form</h4>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="mvId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Movie Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-film"></i></span>
+                        <input type="text" id="mvName" class="form-control" placeholder="Enter movie name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Language</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                        <input type="text" id="language" class="form-control" placeholder="Enter language">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Genre</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                        <input type="text" id="genre" class="form-control" placeholder="Enter genre">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Show Times</label>
+                    <div class="input-group multiselect-dropdown">
+                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                        <div class="selected-items" id="selectedTimesContainer"></div>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select show times
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <input type="checkbox" class="form-check-input" value="9AM" id="time9AM">
+                                    <label class="form-check-label" for="time9AM">9:00 AM</label>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <input type="checkbox" class="form-check-input" value="12PM" id="time12PM">
+                                    <label class="form-check-label" for="time12PM">12:00 PM</label>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <input type="checkbox" class="form-check-input" value="3PM" id="time3PM">
+                                    <label class="form-check-label" for="time3PM">3:00 PM</label>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <input type="checkbox" class="form-check-input" value="6PM" id="time6PM">
+                                    <label class="form-check-label" for="time6PM">6:00 PM</label>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <input type="checkbox" class="form-check-input" value="9PM" id="time9PM">
+                                    <label class="form-check-label" for="time9PM">9:00 PM</label>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <div>
+                    <button class="btn btn-primary" onclick="saveMovie()">
+                        <i class="bi bi-save"></i> Save Movie
+                    </button>
+                    <button class="btn btn-success" onclick="updateMovie()" style="display:none;" id="updateBtn">
+                        <i class="bi bi-arrow-repeat"></i> Update Movie
+                    </button>
+                </div>
+                <button class="btn btn-secondary" onclick="clearForm()" id="clearBtn">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movies List Section -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4><i class="bi bi-list-ul"></i> Movies Catalog</h4>
+            <div>
+                <span class="badge bg-primary" id="movieCount">0 movies</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Language</th>
+                        <th>Genre</th>
+                        <th>Show Times</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="movieTable">
+                    <tr>
+                        <td colspan="6" class="text-center">Loading movies...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Initialize selected times array
+    let selectedTimes = [];
+
+    // Function to update selected times display
+    function updateSelectedTimesDisplay() {
+        const container = $('#selectedTimesContainer');
+        container.empty();
+
+        if (selectedTimes.length === 0) {
+            container.append('<span class="text-muted">No times selected</span>');
+            return;
+        }
+
+        selectedTimes.forEach(time => {
+            const item = $(`
+                <div class="selected-item">
+                    ${time}
+                    <span class="remove-item" onclick="removeTime('${time}')">
+                        <i class="bi bi-x"></i>
+                    </span>
+                </div>
+            `);
+            container.append(item);
+        });
+    }
+
+    // Function to remove a time
+    function removeTime(time) {
+        selectedTimes = selectedTimes.filter(t => t !== time);
+        $(`input[value="${time}"]`).prop('checked', false);
+        updateSelectedTimesDisplay();
+    }
+
+    // Function to get selected times as a string
+    function getSelectedTimes() {
+        return selectedTimes.join(', ');
+    }
+
+    // Function to set selected times from a string
+    function setSelectedTimes(timesStr) {
+        if (!timesStr) return;
+
+        const timesArray = timesStr.split(',').map(t => t.trim());
+        selectedTimes = timesArray;
+
+        // Update checkboxes
+        $('.dropdown-item input[type="checkbox"]').prop('checked', false);
+        timesArray.forEach(time => {
+            $(`input[value="${time}"]`).prop('checked', true);
+        });
+
+        updateSelectedTimesDisplay();
+    }
+
+    // Event listener for checkbox changes
+    $(document).on('change', '.dropdown-item input[type="checkbox"]', function() {
+        const value = $(this).val();
+        const isChecked = $(this).is(':checked');
+
+        if (isChecked && !selectedTimes.includes(value)) {
+            selectedTimes.push(value);
+        } else if (!isChecked) {
+            selectedTimes = selectedTimes.filter(t => t !== value);
+        }
+
+        updateSelectedTimesDisplay();
+    });
+
+    // Save Movie
+    function saveMovie() {
+        let movie = {
+            mvName: $('#mvName').val(),
+            language: $('#language').val(),
+            genre: $('#genre').val(),
+            time: getSelectedTimes()
+        };
+
+        if (!movie.mvName || !movie.language || !movie.genre || selectedTimes.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please fill all fields and select at least one show time',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Saving Movie',
+            html: 'Please wait while we save the movie...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        console.log("11111111")
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/movie/saveMovie',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(movie),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    confirmButtonColor: '#e62429'
+                });
+                clearForm();
+                loadMovies();
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error saving movie: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Update Movie
+    function updateMovie() {
+        let movie = {
+            mvId: $('#mvId').val(),
+            mvName: $('#mvName').val(),
+            language: $('#language').val(),
+            genre: $('#genre').val(),
+            time: getSelectedTimes()
+        };
+
+        if (!movie.mvName || !movie.language || !movie.genre || selectedTimes.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please fill all fields and select at least one show time',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Updating Movie',
+            html: 'Please wait while we update the movie...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/movie/updateMovie',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(movie),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    confirmButtonColor: '#e62429'
+                });
+                clearForm();
+                loadMovies();
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error updating movie: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Search Movie
+    function searchMovie() {
+        const mvId = $('#searchMvId').val();
+        if (!mvId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please enter a movie ID',
+                confirmButtonColor: '#e62429'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Searching Movie',
+            html: 'Please wait while we search for the movie...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/movie/searchMovie/${mvId}`,
+            type: 'GET',
+            success: function(response) {
+                Swal.close();
+                if (response.code === "00") {
+                    const movie = response.content;
+                    $('#mvId').val(movie.mvId);
+                    $('#mvName').val(movie.mvName);
+                    $('#language').val(movie.language);
+                    $('#genre').val(movie.genre);
+                    setSelectedTimes(movie.time);
+
+                    $('#updateBtn').show();
+                    $('html, body').animate({
+                        scrollTop: $(".card-body").offset().top
+                    }, 500);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Movie Found',
+                        text: 'Movie loaded for editing',
+                        confirmButtonColor: '#e62429'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Not Found',
+                        text: response.message || 'Movie not found',
+                        confirmButtonColor: '#e62429'
+                    });
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error searching movie: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // Load All Movies
+    function loadMovies() {
+        $('#movieTable').html(`
+            <tr>
+                <td colspan="6" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </td>
+            </tr>
+        `);
+
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/movie/getAllMovies',
+            type: 'GET',
+            success: function(response) {
+                let rows = '';
+                if (response.content && response.content.length > 0) {
+                    response.content.forEach(movie => {
+                        rows += `<tr>
+                            <td>${movie.mvId}</td>
+                            <td><strong>${movie.mvName}</strong></td>
+                            <td>${movie.language}</td>
+                            <td><span class="badge bg-info text-dark">${movie.genre}</span></td>
+                            <td>${movie.time}</td>
+                            <td class="action-buttons">
+                                <button class='btn btn-warning btn-sm' onclick='editMovie(${movie.mvId})' title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteMovie(${movie.mvId})' title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class='btn btn-info btn-sm' onclick='viewMovie(${movie.mvId})' title="View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                    $('#movieCount').text(response.content.length + ' movies');
+                } else {
+                    rows = `<tr><td colspan="6" class="text-center">No movies found in the database</td></tr>`;
+                    $('#movieCount').text('0 movies');
+                }
+                $('#movieTable').html(rows);
+            },
+            error: function(error) {
+                $('#movieTable').html(`<tr><td colspan="6" class="text-center text-danger">Error loading movies: ${error.responseJSON?.message || 'Server error'}</td></tr>`);
+            }
+        });
+    }
+
+    // Edit Movie (populate form for editing)
+    function editMovie(mvId) {
+        Swal.fire({
+            title: 'Loading Movie',
+            html: 'Please wait while we load the movie details...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/movie/searchMovie/${mvId}`,
+            type: 'GET',
+            success: function(response) {
+                Swal.close();
+                if (response.code === "00") {
+                    const movie = response.content;
+                    $('#mvId').val(movie.mvId);
+                    $('#mvName').val(movie.mvName);
+                    $('#language').val(movie.language);
+                    $('#genre').val(movie.genre);
+                    setSelectedTimes(movie.time);
+
+                    $('#updateBtn').show();
+                    $('html, body').animate({
+                        scrollTop: $(".card-body").offset().top
+                    }, 500);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Movie Loaded',
+                        text: 'Movie details loaded for editing',
+                        confirmButtonColor: '#e62429'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Not Found',
+                        text: response.message || 'Movie not found',
+                        confirmButtonColor: '#e62429'
+                    });
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error fetching movie: ' + (error.responseJSON?.message || 'Unknown error'),
+                    confirmButtonColor: '#e62429'
+                });
+            }
+        });
+    }
+
+    // View Movie (placeholder for view functionality)
+    function viewMovie(mvId) {
+        Swal.fire({
+            icon: 'info',
+            title: 'View Movie',
+            text: `View functionality for movie ID ${mvId} would be implemented here`,
+            confirmButtonColor: '#e62429'
+        });
+    }
+
+    // Delete Movie
+    function deleteMovie(mvId) {
+        Swal.fire({
+            title: 'Confirm Deletion',
+            text: 'Are you sure you want to delete this movie? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Deleting Movie',
+                    html: 'Please wait while we delete the movie...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: `http://localhost:8080/api/v1/movie/deleteMovie/${mvId}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: response.message,
+                            confirmButtonColor: '#e62429'
+                        });
+                        loadMovies();
+                    },
+                    error: function(error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error deleting movie: ' + (error.responseJSON?.message || 'Unknown error'),
+                            confirmButtonColor: '#e62429'
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // Clear Form
+    function clearForm() {
+        $('#mvId').val('');
+        $('#mvName').val('');
+        $('#language').val('');
+        $('#genre').val('');
+        selectedTimes = [];
+        $('.dropdown-item input[type="checkbox"]').prop('checked', false);
+        updateSelectedTimesDisplay();
+        $('#searchMvId').val('');
+        $('#updateBtn').hide();
+        Swal.fire({
+            icon: 'info',
+            title: 'Form Cleared',
+            text: 'The form has been cleared',
+            confirmButtonColor: '#e62429'
+        });
+    }
+
+    // Initialize
+    $(document).ready(function() {
+        // Initialize the selected times display
+        updateSelectedTimesDisplay();
+
+        // Load movies
+        loadMovies();
+
+        // Add cinema-like animation to the container
+        $('.container').hide().fadeIn(800);
+
+        // Add event listener for Enter key in search field
+        $('#searchMvId').keypress(function(e) {
+            if (e.which === 13) {
+                searchMovie();
+            }
+        });
+    });
+</script>
+</body>
+</html>

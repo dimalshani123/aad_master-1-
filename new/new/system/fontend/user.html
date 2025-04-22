@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMaster Pro - Premium Movie Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #e50914; /* Netflix red */
+            --secondary-color: #000000; /* Pure black */
+            --accent-color: #f5c518; /* Gold/yellow */
+            --text-color: #ffffff;
+            --dark-text: #333333;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        header.scrolled {
+            background-color: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            padding: 15px 50px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, #ff0000, #f5c518, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 2s infinite alternate;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes logoGlow {
+            from {
+                text-shadow: 0 0 5px rgba(229, 9, 20, 0.5);
+            }
+            to {
+                text-shadow: 0 0 15px rgba(229, 9, 20, 0.8), 0 0 25px rgba(245, 197, 24, 0.6);
+            }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons button {
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sign-in {
+            background: transparent;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            margin-right: 15px;
+        }
+
+        .sign-in:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sign-up {
+            background: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            color: white;
+        }
+
+        .sign-up:hover {
+            background: #c11119;
+            border-color: #c11119;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+            url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        .hero-content h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+            animation: fadeInUp 1s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+            color: var(--accent-color);
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            animation: fadeInUp 1s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .hero-btn {
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .primary-btn {
+            background: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #c11119;
+            border-color: #c11119;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(245, 197, 24, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Content Sections */
+        section {
+            padding: 100px 50px;
+            position: relative;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+
+        /* Now Showing Section */
+        .now-showing {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+            url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 10px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+        }
+
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .view-all:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .view-all i {
+            margin-left: 5px;
+        }
+
+        .movies-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .movie-card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease;
+            animation-fill-mode: both;
+            border: 1px solid #333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(229, 9, 20, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .movie-card:nth-child(1) { animation-delay: 0.1s; }
+        .movie-card:nth-child(2) { animation-delay: 0.2s; }
+        .movie-card:nth-child(3) { animation-delay: 0.3s; }
+        .movie-card:nth-child(4) { animation-delay: 0.4s; }
+        .movie-card:nth-child(5) { animation-delay: 0.5s; }
+        .movie-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .movie-poster {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .movie-rating {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 8px 0;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .book-btn:hover {
+            background: #c11119;
+        }
+
+        /* Coming Soon Section */
+        .coming-soon {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+            url('https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .coming-soon .section-header h2::after {
+            background: var(--accent-color);
+        }
+
+        .coming-soon .view-all {
+            color: var(--accent-color);
+        }
+
+        .coming-movies {
+            display: flex;
+            overflow-x: auto;
+            gap: 30px;
+            padding: 20px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .coming-movies::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .coming-movies::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+
+        .coming-movies::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .coming-movie {
+            min-width: 300px;
+            scroll-snap-align: start;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+        }
+
+        .coming-movie:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(245, 197, 24, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .coming-poster {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+
+        .coming-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 20px;
+            padding-top: 60px;
+        }
+
+        .coming-title {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .coming-date {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .coming-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .notify-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .notify-btn:hover {
+            background: rgba(245, 197, 24, 0.1);
+        }
+
+        /* Facilities Section */
+        .facilities {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+            url('https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .facilities-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .facility-card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #333;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(229, 9, 20, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .facility-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .facility-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .facility-desc {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* Newsletter Section */
+        .newsletter {
+            padding: 80px 50px;
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+            url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            position: relative;
+            background-attachment: fixed;
+        }
+
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        .newsletter p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .newsletter-btn {
+            padding: 15px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .newsletter-btn:hover {
+            background: #c11119;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 70px 50px 30px;
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.95)),
+            url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero-content h2 {
+                font-size: 3rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .movies-container {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 30px;
+            }
+
+            .logo h1 {
+                font-size: 24px;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 80px 30px 30px;
+                transition: all 0.5s ease;
+                z-index: 999;
+                backdrop-filter: blur(5px);
+            }
+
+            nav.active {
+                right: 0;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 15px 0;
+            }
+
+            .auth-buttons {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+                z-index: 1000;
+            }
+
+            .hero-content h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            section {
+                padding: 70px 30px;
+            }
+
+            .coming-movie {
+                min-width: 250px;
+            }
+
+            .coming-poster {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .logo img {
+                height: 30px;
+            }
+
+            .logo h1 {
+                font-size: 20px;
+            }
+
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 50px 20px;
+            }
+
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-input {
+                border-radius: 30px;
+                margin-bottom: 10px;
+            }
+
+            .newsletter-btn {
+                border-radius: 30px;
+            }
+
+            footer {
+                padding: 50px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header id="header">
+    <div class="logo">
+        <h1>CineMaster Pro</h1>
+    </div>
+    <nav id="nav">
+<!--        <ul>-->
+<!--            <li><a href="#">Home</a></li>-->
+<!--            <li><a href="#">Movies</a></li>-->
+<!--            <li><a href="#">Cinemas</a></li>-->
+<!--            <li><a href="#">Offers</a></li>-->
+<!--            <li><a href="#">About</a></li>-->
+<!--            <li><a href="#">Contact</a></li>-->
+<!--        </ul>-->
+    </nav>
+    <div class="auth-buttons">
+        <a href="login.html">
+            <button class="sign-in">Sign In</button>
+        </a>
+        <a href="register.html">
+            <button class="sign-up">Sign Up</button>
+        </a>
+    </div>
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <video class="hero-video" autoplay muted loop>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-group-of-people-watching-a-movie-at-a-theater-46413-large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-content">
+        <h2>Experience Cinema Like Never Before</h2>
+        <p>Premium screens, Dolby Atmos sound, and luxury seating for the ultimate movie experience</p>
+        <div class="hero-buttons">
+            <a href="booking.html">
+                <button class="hero-btn primary-btn">Book Tickets Now</button>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- Now Showing Section -->
+<section class="now-showing">
+    <div class="section-header">
+        <h2>Now Showing</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <div class="movies-container">
+        <!-- Movie Card 1 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_FMjpg_UX1000_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">The Last Adventure</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">2h 15m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.7</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+
+        <!-- Movie Card 2 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">Spider-Man: No Way Home</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">2h 28m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.2</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+
+        <!-- Movie Card 3 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BOTY4YjI2N2MtYmFlMC00ZjcyLTg3YjEtMDQyM2ZjYzQ5YWFkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">Batman: The Dark Knight</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">2h 32m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 9.0</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+
+        <!-- Movie Card 4 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_FMjpg_UX1000_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">Avatar: The Way of Water</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">3h 12m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 7.6</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+
+        <!-- Movie Card 5 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">The Avengers</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">2h 23m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.0</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+
+        <!-- Movie Card 6 -->
+        <div class="movie-card">
+            <img src="https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg" alt="Movie Poster" class="movie-poster">
+            <div class="movie-info">
+                <h3 class="movie-title">Avengers: Endgame</h3>
+                <div class="movie-meta">
+                    <span class="movie-duration">3h 1m</span>
+                    <span class="movie-rating"><i class="fas fa-star"></i> 8.4</span>
+                </div>
+                <button class="book-btn">Book Now</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coming Soon Section -->
+<section class="coming-soon">
+    <div class="section-header">
+        <h2>Coming Soon</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <div class="coming-movies">
+        <!-- Coming Movie 1 -->
+        <div class="coming-movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BNzQ1ODUzYjktMzRiMS00ODNiLWI4NzQtOTRiN2VlNTNmODFjXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg" alt="Coming Soon" class="coming-poster">
+            <div class="coming-overlay">
+                <h3 class="coming-title">Guardians of the Galaxy Vol. 3</h3>
+                <span class="coming-date">May 5, 2023</span>
+                <p class="coming-desc">Still reeling from the loss of Gamora, Peter Quill rallies his team to defend the universe and one of their own - a mission that could mean the end of the Guardians if not successful.</p>
+                <button class="notify-btn">Notify Me</button>
+            </div>
+        </div>
+
+        <!-- Coming Movie 2 -->
+        <div class="coming-movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_FMjpg_UX1000_.jpg" alt="Coming Soon" class="coming-poster">
+            <div class="coming-overlay">
+                <h3 class="coming-title">The Flash</h3>
+                <span class="coming-date">June 16, 2023</span>
+                <p class="coming-desc">Barry Allen uses his super speed to change the past, but his attempt to save his family creates a world without super heroes, forcing him to race for his life in order to save the future.</p>
+                <button class="notify-btn">Notify Me</button>
+            </div>
+        </div>
+
+        <!-- Coming Movie 3 -->
+        <div class="coming-movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg" alt="Coming Soon" class="coming-poster">
+            <div class="coming-overlay">
+                <h3 class="coming-title">Indiana Jones 5</h3>
+                <span class="coming-date">June 30, 2023</span>
+                <p class="coming-desc">Archaeologist Indiana Jones races against time to retrieve a legendary artifact that can change the course of history.</p>
+                <button class="notify-btn">Notify Me</button>
+            </div>
+        </div>
+
+        <!-- Coming Movie 4 -->
+        <div class="coming-movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BOTY4YjI2N2MtYmFlMC00ZjcyLTg3YjEtMDQyM2ZjYzQ5YWFkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg" alt="Coming Soon" class="coming-poster">
+            <div class="coming-overlay">
+                <h3 class="coming-title">Mission: Impossible 7</h3>
+                <span class="coming-date">July 14, 2023</span>
+                <p class="coming-desc">Ethan Hunt and his IMF team must track down a terrifying new weapon that threatens all of humanity if it falls into the wrong hands.</p>
+                <button class="notify-btn">Notify Me</button>
+            </div>
+        </div>
+
+        <!-- Coming Movie 5 -->
+        <div class="coming-movie">
+            <img src="https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg" alt="Coming Soon" class="coming-poster">
+            <div class="coming-overlay">
+                <h3 class="coming-title">Oppenheimer</h3>
+                <span class="coming-date">July 21, 2023</span>
+                <p class="coming-desc">The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.</p>
+                <button class="notify-btn">Notify Me</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Facilities Section -->
+<section class="facilities">
+    <div class="section-header">
+        <h2>Our Premium Facilities</h2>
+    </div>
+    <div class="facilities-container">
+        <!-- Facility 1 -->
+        <div class="facility-card">
+            <div class="facility-icon">
+                <i class="fas fa-couch"></i>
+            </div>
+            <h3 class="facility-title">Luxury Seating</h3>
+            <p class="facility-desc">Experience ultimate comfort with our premium recliner seats that feature adjustable headrests, footrests, and ample legroom.</p>
+        </div>
+
+        <!-- Facility 2 -->
+        <div class="facility-card">
+            <div class="facility-icon">
+                <i class="fas fa-volume-up"></i>
+            </div>
+            <h3 class="facility-title">Dolby Atmos</h3>
+            <p class="facility-desc">Immerse yourself in breathtaking sound with our state-of-the-art Dolby Atmos technology that delivers moving audio.</p>
+        </div>
+
+        <!-- Facility 3 -->
+        <div class="facility-card">
+            <div class="facility-icon">
+                <i class="fas fa-film"></i>
+            </div>
+            <h3 class="facility-title">4K Laser Projection</h3>
+            <p class="facility-desc">Crystal clear images with our cutting-edge 4K laser projection systems that offer superior brightness and contrast.</p>
+        </div>
+
+        <!-- Facility 4 -->
+        <div class="facility-card">
+            <div class="facility-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h3 class="facility-title">Gourmet Food</h3>
+            <p class="facility-desc">Enjoy a curated menu of gourmet food and beverages delivered right to your seat during the movie.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter">
+    <h2>Stay Updated</h2>
+    <p>Subscribe to our newsletter to receive the latest movie updates, special offers, and exclusive content straight to your inbox.</p>
+    <form class="newsletter-form">
+        <input type="email" placeholder="Enter your email address" class="newsletter-input" required>
+        <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <!-- Column 1 -->
+        <div class="footer-column">
+            <h3>CineMaster Pro</h3>
+            <p>Premium cinema experience with state-of-the-art technology and luxury amenities.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <!-- Column 3 -->
+        <div class="footer-column">
+            <h3>Information</h3>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">FAQs</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 4 -->
+        <div class="footer-column">
+            <h3>Contact Us</h3>
+            <ul>
+                <li><i class="fas fa-map-marker-alt"></i> 123 Cinema Street, Movie City</li>
+                <li><i class="fas fa-phone"></i> +1 234 567 890</li>
+                <li><i class="fas fa-envelope"></i> info@cinemasterpro.com</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2023 CineMaster Pro. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Header Scroll Effect
+    window.addEventListener('scroll', function() {
+        const header = document.getElementById('header');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('nav');
+
+    menuToggle.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        menuToggle.innerHTML = nav.classList.contains('active') ?
+            '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+    });
+
+    // Smooth Scrolling for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Movie Card Hover Effect Enhancement
+    const movieCards = document.querySelectorAll('.movie-card');
+    movieCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+            this.style.boxShadow = '0 15px 30px rgba(229, 9, 20, 0.3)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+        });
+    });
+
+    // Newsletter Form Submission
+    const newsletterForm = document.querySelector('.newsletter-form');
+    newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const emailInput = this.querySelector('input[type="email"]');
+        alert(`Thank you for subscribing with ${emailInput.value}! You'll receive our updates soon.`);
+        emailInput.value = '';
+    });
+
+    // Animate elements when they come into view
+    const animateOnScroll = function() {
+        const elements = document.querySelectorAll('.movie-card, .facility-card, .section-header');
+
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.2;
+
+            if (elementPosition < screenPosition) {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }
+        });
+    };
+
+    // Set initial state for animation
+    window.addEventListener('load', function() {
+        const elements = document.querySelectorAll('.movie-card, .facility-card');
+        elements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.5s ease';
+        });
+
+        animateOnScroll();
+    });
+
+    window.addEventListener('scroll', animateOnScroll);
+</script>
+</body>
+</html>
